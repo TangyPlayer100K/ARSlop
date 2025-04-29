@@ -43,9 +43,20 @@ public class PackageSpawner : MonoBehaviour
         // Select random triangle in Mesh
         var mesh = plane.GetComponent<ARPlaneMeshVisualizer>().mesh;
         var triangles = mesh.triangles;
-        var triangle = triangles[(int)Random.Range(0, triangles.Length - 1)] / 3 * 3;
+        var trianglesIndex = Random.Range(0, triangles.Length / 3);
+        var firstVertexIndex = trianglesIndex * 3;
         var vertices = mesh.vertices;
-        var randomInTriangle = RandomInTriangle(vertices[triangle], vertices[triangle + 1]);
+
+        //get the 3 vertices of the selected triangle
+        var v1 = vertices[triangles[firstVertexIndex]];
+        var v2 = vertices[triangles[firstVertexIndex + 1]];
+        var v3 = vertices[triangles[firstVertexIndex + 2]];
+
+        //get a random point inside the triangle
+        var randomInTriangle = RandomInTriangle(v1, v2);
+        randomInTriangle = RandomInTriangle(randomInTriangle, v3);
+
+        //convert the random point to world space
         var randomPoint = plane.transform.TransformPoint(randomInTriangle);
 
         return randomPoint;
